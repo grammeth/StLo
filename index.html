@@ -3,6 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saint Laurent Boulevard - A Story Map</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Saint Laurent Boulevard</h1>
+        <p class="subtitle">A Story Map of Montreal's Main Street</p>
+    </header>
+
+    <main class="main-content">
+        <div id="map"></div>
+        
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Welcome</h2>
+                <button class="close-btn" aria-label="Close sidebar">&times;</button>
+            </div>
+            <div class="sidebar-content">
+                <p>Explore the rich history of Boulevard Saint-Laurent, Montreal's legendary "Main Street" that divides the city into east and west.</p>
+                <p>Click on any marker on the map to discover stories, histories, and images of significant places along this iconic boulevard.</p>
+                <div class="instructions">
+                    <h3>How to Use</h3>
+                    <ul>
+                        <li>🗺️ Pan and zoom the map to explore</li>
+                        <li>📍 Click on markers to learn about each location</li>
+                        <li>📱 Works on mobile devices</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Saint Laurent Story Map | Built with <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a> & <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/locations.js"></script>
+    <script src="js/map.js"></script>
+</body>
+</html>
+=======
     <title>Simple Map Project</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
