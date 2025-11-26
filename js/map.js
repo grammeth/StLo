@@ -3,6 +3,17 @@
  * Uses Leaflet.js with OpenStreetMap tiles
  */
 
+/**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} text - Text to escape
+ * @returns {string} Escaped text safe for HTML insertion
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Initialize the map centered on Saint Laurent Boulevard, Montreal
 const map = L.map('map', {
     center: [45.5150, -73.5700],
@@ -17,23 +28,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Custom icon for markers
-const customIcon = L.divIcon({
-    className: 'custom-marker',
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12]
-});
-
-// Alternative icon using Leaflet's default style but with custom color
-const storyIcon = L.icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Use Leaflet's default marker icon (bundled with Leaflet, no external dependencies)
+// The default blue marker is reliable and doesn't require external resources
 
 // DOM elements
 const sidebar = document.getElementById('sidebar');
@@ -51,14 +47,15 @@ document.querySelector('.main-content').appendChild(toggleBtn);
 // Add markers for each location
 const markers = [];
 locations.forEach(location => {
-    const marker = L.marker([location.lat, location.lng], { icon: storyIcon })
+    // Use Leaflet's default marker (no custom icon needed)
+    const marker = L.marker([location.lat, location.lng])
         .addTo(map);
     
-    // Create popup content
+    // Create popup content with escaped HTML to prevent XSS
     const popupContent = `
         <div class="popup-content">
-            <h3>${location.name}</h3>
-            <p>${location.shortDescription}</p>
+            <h3>${escapeHtml(location.name)}</h3>
+            <p>${escapeHtml(location.shortDescription)}</p>
             <button class="learn-more" data-id="${location.id}">Learn More</button>
         </div>
     `;
@@ -85,27 +82,35 @@ map.on('popupopen', function(e) {
 
 /**
  * Display location details in the sidebar
+ * All dynamic content is escaped to prevent XSS
  */
 function showLocationDetails(location) {
     sidebarHeader.textContent = location.name;
+    
+    // Escape all dynamic content for safe HTML insertion
+    const safeName = escapeHtml(location.name);
+    const safePeriod = escapeHtml(location.period);
+    const safeDescription = escapeHtml(location.fullDescription);
+    const safeAddress = escapeHtml(location.address);
+    const safeImage = escapeHtml(location.image);
     
     // Generate placeholder image if needed
     const imageHtml = location.hasPlaceholderImage 
         ? `<div style="width: 100%; height: 200px; background: linear-gradient(135deg, #1a5276 0%, #5dade2 100%); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 1rem;">
              <div style="text-align: center; padding: 1rem;">
                <div style="font-size: 3rem;">📍</div>
-               <div style="font-size: 0.9rem; opacity: 0.8;">${location.name}</div>
+               <div style="font-size: 0.9rem; opacity: 0.8;">${safeName}</div>
              </div>
            </div>`
-        : `<img src="${location.image}" alt="${location.name}" class="location-image" onerror="this.style.display='none'">`;
+        : `<img src="${safeImage}" alt="${safeName}" class="location-image" onerror="this.style.display='none'">`;
     
     sidebarContent.innerHTML = `
         <div class="location-card">
             ${imageHtml}
-            <h3>${location.name}</h3>
-            <p class="location-period">📅 ${location.period}</p>
-            <p class="location-description">${location.fullDescription}</p>
-            <p class="location-address">📍 ${location.address}</p>
+            <h3>${safeName}</h3>
+            <p class="location-period">📅 ${safePeriod}</p>
+            <p class="location-description">${safeDescription}</p>
+            <p class="location-address">📍 ${safeAddress}</p>
         </div>
     `;
     
